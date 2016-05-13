@@ -2,17 +2,19 @@
 
 set -e
 
-YELLOW='\033[1;33m'
-RESET='\033[0m'
+BUILD_DIR=${1:-}
+CACHE_DIR=${2:-}
+ENV_DIR=${3:-}
+BP_DIR=$(cd $(dirname ${0:-}); cd ..; pwd)
 
-echo -e "${YELLOW}WARNING: This buildpack is no longer maintained."
-echo -e
-echo -e "Please choose a different buildpack or go to https://github.com/ddollar/heroku-buildpack-multi"
-echo "and fork it to your own account."
-echo -e
-echo -e "This buildpack will cease to function at the stroke of midnight on January 1, 2017.${RESET}"
+### Load dependencies
+source $BP_DIR/lib/environment.sh
 
-[ $(date +%Y%m%d%H%M%S) -gt "20170101000000" ] && exit 1
+## Copy application sources to root folder
+export_env_dir "$ENV_DIR"
+if [ -d "$HOBOUT_APP" ]; then
+  cp -rf "$HOBOUT_APP/." $BUILD_DIR
+fi
 
 function indent() {
   c='s/^/       /'
